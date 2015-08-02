@@ -1,9 +1,9 @@
 var express = require('express');
 var fs = require('fs');
+var models = require('./models');
 
 var body_parser = require('body-parser');
 
-var iconv = require('iconv-lite');// 加载编码转换模块
 //以上是所需要的模块
 var express = require('express');
 var app = express();
@@ -12,74 +12,60 @@ var app = express();
 app.use(body_parser());
 
 
-
-
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     console.log("Hello world")
 });
 
-app.post('/register', function(req, res) {
+app.post('/register', function (req, res) {
 
 });
 
-app.post('/login', function(req, res) {
+app.post('/login', function (req, res) {
 
 });
 
-app.post('/logout', function(req, res) {
+app.post('/logout', function (req, res) {
 
 });
 
-app.get('/about', function(req, res) {
+app.get('/about', function (req, res) {
 
 });
 
-app.post('/add_blog', function(req, res) {
+app.post('/add_blog', function (req, res) {
 
-    var title = req.body.title;//用来读请求
+    var title = req.body.title;
     var body = req.body.body;
-    var json_string = fs.readFileSync('blog.json').toString();
-    var blogs = eval('(' + json_string + ')');
+    var blogs = models.load_blogs();
+    models.add_blog(blogs,title,body);
+    models.store_blogs(blogs)
 
-
-    blogs.next_id += 1;
-    var blog = {
-        id: blogs.next_id,
-        title: title,
-        body: body
-    };
-    blogs.articles.push(blog);
-
-    fs.writeFile("blog.json", JSON.stringify(blogs), 'utf8', function() {
-        console.log("Stored in file");
-    });
+    res.send("OK");
 });
 
-app.post('/edit_blog/:number',function(req, res) {
+app.post('/edit_blog/:id', function (req, res) {
 
 });
 
-app.post('/del_blog/:number', function(req, res) {
+app.post('/del_blog/:id', function (req, res) {
 
 });
 
-app.get('/archives/:number', function(req, res) {
+app.get('/archives/:id', function (req, res) {
 
 });
 
-app.get('/tags/:tag_name/:number', function(req, res) {
+app.get('/tags/:tag_name/:id', function (req, res) {
 
 });
 
-app.get('/query/:condition', function(req, res) {
-    query_title = function(blog, title) {
-        var blogs = [];
-        for (var i = 0; i < blog.articles.length; i++)
-            if (blog.articles[i].title == title)
-                blogs.push(blog.articles[i]);
-        return posts;
-    };
+app.get('/query/:id', function (req, res) {
 
+    var id = req.param("id");
+
+    var blog = models.query_title( id);
+
+    res.send(JSON.stringify(blog));
 });
 
 app.listen(3000);
