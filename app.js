@@ -36,7 +36,7 @@ app.get('/about', function(req, res) {
 
 app.post('/add_blog', function(req, res) {
 
-    var title = req.body.title;
+    var title = req.body.title;//用来读请求
     var body = req.body.body;
     var json_string = fs.readFileSync('blog.json').toString();
     var blogs = eval('(' + json_string + ')');
@@ -72,6 +72,13 @@ app.get('/tags/:tag_name/:number', function(req, res) {
 });
 
 app.get('/query/:condition', function(req, res) {
+    query_title = function(blog, title) {
+        var blogs = [];
+        for (var i = 0; i < blog.articles.length; i++)
+            if (blog.articles[i].title == title)
+                blogs.push(blog.articles[i]);
+        return posts;
+    };
 
 });
 
